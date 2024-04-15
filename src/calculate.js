@@ -11,7 +11,8 @@ function factorial(n){
 
 function product(n, term = k => k, initial=1){
     // todo: implement the product `term(initial) * term(initial + 1) * term(initial + 2) * ... * term(initial + d)` with initial + d <= n
-    return 0;
 }
 
-export {factorial, product}
+console.log(product(5, (k) => {return k-1}));
+
+//export {factorial, product}
