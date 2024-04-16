@@ -1,0 +1,29 @@
+body {
+    margin: 3%;
+}
+
+form {
+    display: block;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    width: 10rem;
+    margin-top: 1rem;
+}
+
+input[type=submit] {
+    margin-top: 1rem;
+}
+
+tr { display: block; float: left; }
+th, td { display: block; }
+
+table, th, td {
+    border: 1px solid;
+}
+
+table {
+    border-collapse: collapse;
+}

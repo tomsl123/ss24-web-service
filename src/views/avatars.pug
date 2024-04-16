@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1 Avatar List
+    ul
+        each avatar in avatars
+            li
+                a(href='/avatar/' + avatar.id)= avatar.characterName

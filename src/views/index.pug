@@ -1,0 +1,56 @@
+extends layout
+
+block content
+    h1 Avatar creation system
+
+    form(method='post' action='/create-avatar')
+        .input-group
+            label(for='name') Avatar name
+            input(type='text' name='name' id='name')
+
+        .input-group
+            label(for='age') Child's age
+            input(type='number' name='age' id='age')
+
+        .input-group
+            label(for='skinColor') Character skin color
+            input(type='color' name='skinColor' id='skinColor')
+
+        .input-group
+            label(for='hairstyle') Avatar hair style
+            select(id='hairstyle' name='hairStyle')
+                option Classic Bob
+                option Sleek Ponytail
+                option Messy Bun
+                option Side Swept Waves
+                option Pixie Cut
+
+        .input-group
+            label(for='headShape') Avatar head shape
+            select(id='headShape' name='headShape')
+                option Oval
+                option Round
+                option Square
+                option Heart-shaped
+                option Diamond
+
+        .input-group
+            label(for='upperClothing') Avatar upper clothing
+            select(id='upperClothing' name='upperClothing')
+                option Polo shirt
+                option Button-down shirt
+                option T-shirt
+                option Tank top
+                option Blouse
+
+        .input-group
+            label(for='lowerClothing') Avatar lower clothing
+            select(id='lowerClothing' name='lowerClothing')
+                option Jeans
+                option Leggings
+                option Shorts
+                option Skirt
+                option Trousers
+
+
+        input(type='submit' value='Submit avatar')
