@@ -1,5 +1,5 @@
-const express = require('express');
-const fs = require("node:fs");
+import express from 'express';
+import fs from 'fs';
 const router = express.Router();
 
 router.get('/', (req, res, next) => {
@@ -15,5 +15,4 @@ router.get('/avatar/:id', (req, res, next) => {
     const avatar = JSON.parse(fs.readFileSync('./src/database/avatars.json').toString())[req.params.id];
     res.render('avatarDetail', {avatar: avatar});
 });
-
-module.exports = router;
+export default router;

@@ -1,10 +1,9 @@
-const express = require('express');
-const {Router} = require("express");
-const fs = require("node:fs");
+import express from 'express';
+import fs from 'fs';
 const router = express.Router();
 
 router.post('/avatars', (req, res, next) => {
-    console.log(req.body);
+    //console.log(req.body);
 
     const newAvatar = {
         id: Date.now(),
@@ -28,10 +27,12 @@ router.post('/avatars', (req, res, next) => {
         res.status(500).send('Server error occured!');
     }
 
+    res.setHeader('content-type', 'application/json');
     res.status(201).set('Location', '/api/avatar/' + newAvatar.id).send(JSON.stringify(newAvatar));
 });
 
 router.get('/avatars', (req, res, next) => {
+    res.setHeader('content-type', 'application/json');
     res.status(200).send(JSON.stringify(getAvatarsArray()))
 });
 
@@ -48,6 +49,7 @@ router.get('/avatars/:id', (req, res, next) => {
         res.sendStatus(404);
     }
     else {
+        res.setHeader('content-type', 'application/json');
         res.status(200).send(JSON.stringify(avatar));
     }
 });
@@ -114,4 +116,4 @@ function getAvatarsArray() {
     return avatarData;
 }
 
-module.exports = router;
+export default router;

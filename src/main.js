@@ -1,20 +1,19 @@
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
+import createError from 'http-errors';
+import express from 'express';
+import path from 'path';
+import bodyParser from 'body-parser';
+import indexRouter from './routes/index.js';
+import apiRouter from './routes/api.js';
 
 const app = express();
 
-const indexRouter = require('./routes/index');
-const apiRouter = require('./routes/api')
-
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', './src/views');
 app.set('view engine', 'pug');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('./src/public'));
 
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
@@ -35,4 +34,4 @@ app.use(function(err, req, res, next) {
     res.render('error');
 });
 
-module.exports = app;
+export default app;
