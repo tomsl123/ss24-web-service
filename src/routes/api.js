@@ -21,7 +21,7 @@ router.post('/avatars', (req, res, next) => {
 
         avatarData.push(newAvatar);
 
-        fs.writeFileSync('./src/database/avatars.json', JSON.stringify(avatarData), {flag: 'w'});
+        rewriteDatabaseFile('./src/database/avatars.json', avatarData);
     }
     catch (e) {
         res.status(500).send('Server error occured!');
@@ -81,7 +81,7 @@ router.put('/avatars/:id', (req, res, next) => {
         createdAt: avatarData[avatarIndex].createdAt
     };
 
-    fs.writeFileSync('./src/database/avatars.json', JSON.stringify(avatarData), {flag: 'w'});
+    rewriteDatabaseFile('./src/database/avatars.json', avatarData);
 
     res.sendStatus(204);
 });
@@ -103,12 +103,12 @@ router.delete('/avatars/:id', (req, res, next) => {
 
     avatarData.splice(avatarIndex, 1);
 
-    fs.writeFileSync('./src/database/avatars.json', JSON.stringify(avatarData), {flag: 'w'});
+    rewriteDatabaseFile('./src/database/avatars.json', avatarData);
 
     res.sendStatus(204);
 })
 
-function getAvatarsArray() {
+export function getAvatarsArray() {
     let avatarData = [];
     if(fs.existsSync('./src/database/avatars.json')) {
         avatarData = JSON.parse(fs.readFileSync('./src/database/avatars.json').toString());
@@ -116,4 +116,8 @@ function getAvatarsArray() {
     return avatarData;
 }
 
-export default router;
+export function rewriteDatabaseFile(databaseFilePath, data) {
+    fs.writeFileSync(databaseFilePath, JSON.stringify(data), {flag: 'w'});
+}
+
+export {router};
