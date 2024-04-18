@@ -1,13 +1,10 @@
 import {jest, test, expect, beforeEach, describe} from "@jest/globals"; // this is optional, all three are global variables im runner scope
 
-jest.mock('../../routes/api.js', () => {
-    // Require the original module to not be mocked...
-    const originalModule = jest.requireActual('../../routes/api.js');
+jest.mock('../../database/databaseService.js', () => {
     const fs = jest.requireActual('fs');
 
     return {
         __esModule: true, // Use it when dealing with esModules
-        ...originalModule,
         getAvatarsArray: jest.fn().mockReturnValue(TEST_SERVER_DATA),
         rewriteDatabaseFile: jest.fn().mockImplementation((filepath, data) => {
             fs.writeFileSync('./src/tests/database/avatars.json', JSON.stringify(data), {flag: 'w'});

@@ -14,9 +14,10 @@
     "supertest": "^6.3.4"
   },
   "dependencies": {
+    "body-parser": "^1.20.2",
     "express": "^4.19.2",
     "http-errors": "^2.0.0",
     "pug": "^3.0.2",
-    "body-parser": "^1.20.2"
+    "superagent": "^8.1.2"
   }
 }
