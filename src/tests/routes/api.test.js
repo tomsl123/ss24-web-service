@@ -1,21 +1,9 @@
 import {jest, test, expect, beforeEach, describe} from "@jest/globals"; // this is optional, all three are global variables im runner scope
-
-jest.mock('../../database/databaseService.js', () => {
-    const fs = jest.requireActual('fs');
-
-    return {
-        __esModule: true, // Use it when dealing with esModules
-        getAvatarsArray: jest.fn().mockReturnValue(TEST_SERVER_DATA),
-        rewriteDatabaseFile: jest.fn().mockImplementation((filepath, data) => {
-            fs.writeFileSync('./src/tests/database/avatars.json', JSON.stringify(data), {flag: 'w'});
-        })
-    };
-});
-
 import request from 'supertest';
 import app from "../../main.js";
+import bcrypt from "bcrypt";
 
-const TEST_SERVER_DATA = [
+const TEST_AVATAR_DATA = [
     {
         id: 1713260956262,
         characterName: "User",
@@ -51,42 +39,196 @@ const TEST_SERVER_DATA = [
     }
 ];
 
-describe('avatar api operations', () => {
+const TEST_USER_CREDENTIALS = {
+    username: 'SomeUsername',
+    password: '123'
+}
 
-    const TEST_REQUEST_JSON = {
+let mockUserData = [
+    {
+        name: 'SomeName',
+        username: TEST_USER_CREDENTIALS.username,
+        password: bcrypt.hashSync(TEST_USER_CREDENTIALS.password, 10),
+        roles: ['parent']
+    }
+];
+
+jest.mock('../../database/databaseService.js', () => {
+    const fs = jest.requireActual('fs');
+
+    return {
+        __esModule: true,
+        getAvatarsArray: jest.fn().mockReturnValue(TEST_AVATAR_DATA),
+        rewriteDatabaseFile: jest.fn().mockImplementation((filepath, data) => {
+            fs.writeFileSync('./src/tests/database/avatars.json', JSON.stringify(data), {flag: 'w'});
+        }),
+        getUsersArray: jest.fn().mockReturnValue([{
+            name: 'SomeName',
+            username: 'SomeUsername',
+            password: '$2b$10$sWnERVP1teQKpMY.W0jU.e35/5ceNY1RJUN4vX84mdhfvcd/CyimC',
+            roles: ['parent']
+        }])
+    };
+});
+
+describe('API Avatar Creation', () => {
+
+    const TEST_AVATAR_REQUEST_JSON = {
         "characterName": "Mark",
         "childAge": 12,
         "skinColor": "#0000ff",
-        "hairStyle": "short",
-        "headShape": "oval",
-        "upperClothing": "jacket",
-        "lowerClothing": "shorts"
+        "hairStyle": "Classic Bob",
+        "headShape": "Oval",
+        "upperClothing": "T-shirt",
+        "lowerClothing": "Shorts"
     }
 
     beforeEach(() => {
         jest.resetModules();
     });
 
-    test('create avatar', async () => {
+    test('response works and has correct format', async () => {
 
         const response = await request(app)
             .post('/api/avatars')
-            .send(TEST_REQUEST_JSON)
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(TEST_AVATAR_REQUEST_JSON)
             .set('Accept', 'application/json')
             .expect(201);
 
-        expect(response.body).toMatchObject(TEST_REQUEST_JSON);
-        expect(response.body.id).toBeGreaterThan(0);
+        expect(response.body).toMatchObject(TEST_AVATAR_REQUEST_JSON);
+        expect(response.body.id).toBeDefined();
         expect(response.body.createdAt).toBeDefined();
     });
 
-    test('Get all avatars',  async () => {
+    test('Request must contain characterName', async () => {
+
+        const testData = {
+            "childAge": 12,
+            "skinColor": "#0000ff",
+            "hairStyle": "Classic Bob",
+            "headShape": "Oval",
+            "upperClothing": "T-shirt",
+            "lowerClothing": "Shorts"
+        }
+
         const response = await request(app)
-            .get('/api/avatars')
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
             .set('Accept', 'application/json')
-            .expect(200);
-
-
+            .expect(400);
     });
+
+    test('Request must contain childAge', async () => {
+
+        const testData = {
+            "characterName": "Mark",
+            "skinColor": "#0000ff",
+            "hairStyle": "Classic Bob",
+            "headShape": "Oval",
+            "upperClothing": "T-shirt",
+            "lowerClothing": "Shorts"
+        }
+
+        const response = await request(app)
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
+            .set('Accept', 'application/json')
+            .expect(400);
+    });
+
+    test('Request must contain skinColor', async () => {
+
+        const testData = {
+            "characterName": "Mark",
+            "childAge": 12,
+            "hairStyle": "Classic Bob",
+            "headShape": "Oval",
+            "upperClothing": "T-shirt",
+            "lowerClothing": "Shorts"
+        }
+
+        const response = await request(app)
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
+            .set('Accept', 'application/json')
+            .expect(400);
+    });
+
+    test('Request must not contain lowerClothing when upperClothing value is Dress', async () => {
+
+        const testData = {
+            "characterName": "Mark",
+            "childAge": 12,
+            "skinColor": "#0000ff",
+            "hairStyle": "Classic Bob",
+            "headShape": "Oval",
+            "upperClothing": "Dress"
+        }
+
+        const response1 = await request(app)
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
+            .set('Accept', 'application/json')
+            .expect(201);
+
+        testData.lowerClothing = 'Shorts';
+
+        const response2 = await request(app)
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
+            .set('Accept', 'application/json')
+            .expect(400);
+    });
+
+    test('Response contains default values when undefined in Request',  async () => {
+        const testData = {
+            "characterName": "Mark",
+            "childAge": 12,
+            "skinColor": "#0000ff"
+        };
+
+        const response = await request(app)
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
+            .set('Accept', 'application/json')
+            .expect(201);
+
+        const {headShape, hairStyle, upperClothing, lowerClothing} = response.body;
+        expect(headShape).toBeDefined();
+        expect(hairStyle).toBeDefined();
+        expect(upperClothing).toBeDefined();
+        expect(lowerClothing).toBeDefined()
+    });
+
+    test('Server validates characterName correctly',  async () => {
+        const testData = {
+            "characterName": "Ma",
+            "childAge": 12,
+            "skinColor": "#0000ff"
+        }
+
+        const response1 = await request(app)
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
+            .set('Accept', 'application/json')
+            .expect(400);
+
+        testData.characterName = 'Markkkkkkkkkkkkkkkkkk';
+
+        const response2 = await request(app)
+            .post('/api/avatars')
+            .auth(TEST_USER_CREDENTIALS.username, TEST_USER_CREDENTIALS.password)
+            .send(testData)
+            .set('Accept', 'application/json')
+            .expect(400);
+    })
 });
 

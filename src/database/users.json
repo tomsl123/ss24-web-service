@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Paul",
+    "username": "paul@example.com",
+    "password": "$2b$10$GKf385m9in.sFgoMfnPrKuB8RoiqFTBCayweKS6gzsnZ3MDofQy6m",
+    "token": "qQRBA53FkYEMu6F7LTtGoqKjSK9RLCbnuVMDT3XjXUB9BgvWBKubsK3ecHs9BfHB",
+    "roles": [
+      "child"
+    ]
+  },
+  {
+    "name": "Mary",
+    "username": "mary@example.com",
+    "password": "$2b$10$sWnERVP1teQKpMY.W0jU.e35/5ceNY1RJUN4vX84mdhfvcd/CyimC",
+    "token": "vm8Mcp5uFNxxvNyqDTKtAjboP75w34o8gH9UfaT25YTsTyNc8mDZbZ93rLnM7UHV",
+    "roles": [
+      "parent",
+      "child"
+    ]
+  },
+  {
+    "name": "Peter",
+    "username": "peter@example.com",
+    "password": "$2b$10$oIETTEiAkD6wcP.SPYUvgeCR/7hZMPxW6IjmVOy2N8ijSbaKhSFjC",
+    "roles": [
+      "parent"
+    ]
+  }
+]
