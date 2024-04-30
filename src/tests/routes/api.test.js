@@ -3,7 +3,7 @@ import request from 'supertest';
 import app from "../../main.js";
 import bcrypt from "bcrypt";
 
-//TODO: Jak mockovat userData tak, abych vyuzil stejnou konstantu jak u mocku tak u expectu; Otestovat vytvoreni uzivatle se vsim vsudy; Optional middleware validace + otestovat zbyle avatar metdoy
+//TODO:  Otestovat vytvoreni uzivatle se vsim vsudy; Optional middleware validace + otestovat zbyle avatar metdoy
 
 
 const TEST_AVATAR_DATA = [
@@ -256,5 +256,9 @@ describe('API User Creation', () => {
         expect(response.body.roles).toStrictEqual(TEST_USER_REQUEST_JSON.roles)
         expect(bcrypt.compareSync(TEST_USER_REQUEST_JSON.password, response.body.password)).toBeTruthy();
     });
+
+    test('Request must contain name and name must be formatted properly', () => {
+
+    })
 });
 
