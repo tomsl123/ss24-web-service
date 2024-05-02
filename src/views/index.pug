@@ -1,7 +1,12 @@
 extends layout
 
+block scripts
+    script(src='scripts/sendIndexForm.js' defer)
+
 block content
     h1 Avatar creation system
+
+    .flash-message(hidden)
 
     form(method='post' action='/create-avatar')
         .input-group
@@ -53,4 +58,4 @@ block content
                 option Trousers
 
 
-        input(type='submit' value='Submit avatar')
+        input(type='button' value='Submit avatar' onclick='submitForm()')

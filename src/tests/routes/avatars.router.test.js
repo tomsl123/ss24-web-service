@@ -4,6 +4,7 @@ import app from "../../main.js";
 import bcrypt from "bcrypt";
 
 //TODO:  Otestovat vytvoreni uzivatle se vsim vsudy; Optional middleware validace + otestovat zbyle avatar metdoy
+//TODO: Prepnout testy na validaci pomoci jwt. Asi vytvorit token prede vsim a pak ho pouzit
 
 
 const TEST_AVATAR_DATA = [

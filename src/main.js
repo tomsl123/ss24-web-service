@@ -2,7 +2,9 @@ import createError from 'http-errors';
 import express from 'express';
 import bodyParser from 'body-parser';
 import indexRouter from './routes/index.js';
-import * as apiRouter from './routes/api.js';
+import * as apiRouter from './routes/avatars.router.js';
+import * as userRouter from './routes/users.router.js';
+import jwt from 'jsonwebtoken'
 
 const app = express();
 
@@ -14,7 +16,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('./src/public'));
 
+// ORDER MATTERS!!! Passport authentication is broken otherwise!
 app.use('/', indexRouter);
+app.use('/api', userRouter.router);
 app.use('/api', apiRouter.router);
 
 // catch 404 and forward to error handler

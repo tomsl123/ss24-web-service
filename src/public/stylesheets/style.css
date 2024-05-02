@@ -27,3 +27,20 @@ table, th, td {
 table {
     border-collapse: collapse;
 }
+
+.flash-message {
+    width: 95%;
+    height: 2rem;
+    margin: 0 auto;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 2rem;
+}
+.fail {
+    background-color: #ff7979;
+    color: #690404;
+}
+.success {
+    background-color: #d2ffa5;
+    color: #0f7300;
+}
